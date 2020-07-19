@@ -1,0 +1,67 @@
+#MAX_SER_IR의 값에 따라 INJUSY변수를 만들고, 모든 에측변수가 범주형이 되어야 한다.
+accidents.df<-read.csv("!")
+accidents.df$INJURY<-ifelse(accidents.df$MAX_SEV_IR>0, "yes", "no")
+
+for(i in c(1:dim(accidents.df)[2])){
+accidents.df[,i]<-as.factor(accidents.df[,i])
+}
+
+prop.table(table(table(accidents.df$INJURY))
+
+#이 데이터세트의 처음 12개의 레코드를 선택하여 응답(INJURY)과 두 개의 예측변수 WEATHER_R과 TRAF_OCN_R만을 고려하시오.
+#이 12개의 레코드들에 대해서 두 예측변수들의 함수로서 INJURY를 검토하는 피벗 테이블을 작성하시오. 피벗 테이블의 세 변수들 모두 행/열로 사용하시오.
+table(accidents.df[1:12, c("INJURY", "WEATHER_R", "TRAF_CON_R")])
+
+#예측변수들의 여섯 개 가능한 조합이 주어졌을 때 부상이 있을 (INJURY=yes) 정확한 베이즈 조건부 확률을 계산하시오.
+head(accidents.df[, c("INJURY", "WEATHER_R", "TRAF_CON_R")], 12)
+
+#12개 레코드에 대해서 나이브 베이즈 분류기를 돌려서 결과에 대한 정오분류표를 작성하시오.
+nb<-naiveBayes(INJURY ~ TRAF_CON_R + WEATHER_R, data= accidents.df[1:12,]
+#test nb with caret
+nb.pred.calss <- predict(nb, newdata=accidents.df[1:12, c("INJURY", "WEATHER_R", "TRAF_CON_R")]
+nb.pred.prop <- predict(nb, newdata = accidents.df[1:12, c("INJURY", "WEATHER_R", "TRAF_CON_R")], type = "raw")
+confusionMatrix(accidents.df[1;12, "INJURY"], nb.pred.class)
+#데이터를 학습(60) 검증(40)세트로 분할
+vars<- c("~,"<")
+
+#관련된 에측변수들과 응답으로서 INJURY을 갖는 학습세트를 이용하여 나이브 베이즈 분류기 실행, 정오행렬 보임
+nb<-naiveBayes(INJURY ~., data = train.df[, vars])
+confusionMatrix(train.df$INJURY, predict(nb, train.df[, vars]), positive="yes")
+
+#검증 데이터 세트에 대한 전체 오차는?
+confusionMatrix(valid.df$INJURY, predict(nb, valid.df[, vars]), positive="yes")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
