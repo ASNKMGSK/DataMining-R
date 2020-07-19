@@ -1,0 +1,79 @@
+setwd("D:R/data")
+library(rpart)
+library(rpart.plot)
+library(caret)
+
+#데이터 확인 후 전처리
+delays.df <- read.csv("FlightDelays.csv")
+str(delays.df)
+names(delays.df)
+t(t(names(delays.df)))
+delays.df<-delays.df[, -c(3,6,7,11,12)]
+str(delays.df)
+
+lapply(delays.df, class)
+delays.df$DAY_WEEK<-as.factor(delays.df$DAY_WEeK)
+
+#8개의 구간으로 나눔
+delays.df$CRS_DEP_TIME<-cut(delays.df$CRS_DEP_TIME/100,8)
+delays.df$DAY_WEEK
+delays.df$CRS_DEP-TIME
+class(delays.df$CRS_DEP_TIME)
+set.seed(1)
+
+#학습데이터 검증데이터 나눔
+train.index<-sample(c(1:dim(delays.df)[1]), dim(delays.df)[1]*0.6)
+valid.index<-setdiff(c(1:dim(delays.df)[1]), train.index)
+train.df<-delays.df[train.index, ]
+valid.df<-delays.df[valid.index,]
+str(train.df)
+
+#a번 문제 (가지치기)
+delays.ct<-raprt(Filght.Status ~ ., data= train.df, method = "class", maxdepth =8, cp=0.001)
+pfit<-prune(delays.ct, cp=delays.ct$cptable[which.min(delays.ct$cptable[,"xerror"]), "cp"])
+prp(pfit)
+prp(delays.ct, cex=0.7)
+
+#b번 월요일 오전 7시에 DCA에서 EWR을 비행해야 한다면, 이 나무모델을 사용할 수 있겠는가? 필요한 다른 정보는 무엇인가? 이 모델은 실제로 사용할 수 있는 모델인가? 중복된 정보는 무엇인가?
+delays.ct.point.pred.train<-predict(delays.ct, train.df, type="class
+confusionMatrix(delays.ct.point.pred.tain, train.df$Flight.Status)
+delays.ct<-rpart(Flight.Status ~ ., data= train.df[,-6], method = "class", maxdepth =8, cp = 0.001)
+pfit<-prune(delays.ct, cp = delays.ct$cptable[which.min(delays.ct$cptable[,xerror"]), "cp"])
+prp(pfit)
+prp(delays.ct, cex=0.8)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

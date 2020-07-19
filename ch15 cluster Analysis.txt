@@ -1,0 +1,65 @@
+getwd()
+setwd("D:\Rdata")
+
+data.df<-read.csv("Pharmaceuticals.csv")
+str(data.df)
+utilities.df<-data.df
+row.names(utilities.df)
+
+#set row names to the utilities column
+row.names(utilities.df)<-utilities.df[,1]
+row.names)utilities.df)
+
+#remove the utility column
+utilities.df<-utilities.df[,-c(1,2,12,13,14)]
+utilities.df
+
+#compute Euclidean distance
+d<-dis(utilities.df, method = "euclidean")
+d
+
+#normalize input variables
+utilities.df.norm<-sapply(utilities.df, scale)
+utilities.df.norm
+
+#add row names; utilities
+row.names(utilities.df.norm)<-row.names(utilities.df)
+row.names(utilities.df.norm)
+utilities.df.norm
+
+#compute normalized distance based on scales
+d.norm<-dist(utilities.df.norm, method="eucliean:)
+hc1<-hclust(d.norm, method="ward.D')
+plot(hc1, hang = -1, ann=TRUE)
+hc2<-hclust(d.norm, method = "average")
+hc3<-hclust(d.norm, method="complete")
+mebm<-cutree(hc3, k=3)
+memb
+str(memb)
+
+row.names(utilities.df.norm<-paste(memb, ": ", row.names(utilities.df)m sep="")
+row.names(utilities.df.norm)
+heatmap(as.matrix(utilities.df.norm), Colv=NA, hclustfun=hc1, col =rev(paste("gray", 1:99, sep="")))
+
+#군집을 형성하는 데 사용되지 않은 범주형 변수들(10번부터 12번까지의 변수)과 관련하여 군집에 어떤 패턴이 존재하는가?
+table(data.df$Median_Recommendation, memb)
+table(data.df$Location, memb)
+table(data.df$Exchange, memb)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

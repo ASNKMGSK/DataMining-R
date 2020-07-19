@@ -1,0 +1,110 @@
+bank.df<-read.csv("UniversalBank.csv")
+str(bank.df)
+
+#팩터 변수로 바꿈
+bank.df$Education<factor(bank.df$Education)
+
+#범주형 변수를 가변수로 변환
+edu.df<-as.data.frame(model.matrix(~ 0 + Education, data=bank.df))
+str(edu.df)
+edu.df
+
+#ID와 우편번호를 제거하고, 변환한 Education을 데이터에 반영
+bank.df<-cbind(bank.df[ , -c(1,5,8)] edu.df[,])
+str(bank.df)
+
+#학습데이터와 검증데이터 분할
+set.seed(1)
+train.index<-sample(row.names(bank.df), 0.6*dim(bank.df)[1])
+train.index
+valid.index<-setdiff(row.names(bank.df), train.index)
+train.df<-bank.df[train.index, ]
+str(train.df)
+valid.df<-bank.df[valid.index, ]
+valid.df
+
+##새로운 데이터 생성
+new.df <- data.fram(Age = 40, Experience = 10, Income=84, Family = 2, CCAvg = 2, Mortgage = 0, Securities.Account = 0, CD.Account = 0, Online = 1, CreditCard = 2, Education1 = 0, Education2 = 1, Education3 = 0)
+
+#데이터 정규화
+train.norm.df<-train.df
+valid.norm.df<-valid.df
+valid.norm.df
+bank.norm.df<-bank.df
+install.packages(caret)
+library(caret)
+#train.df[ , 7] traget variable
+norm.values <- preProcess(train.df[ , -7 ], method=c("center", "scale'))
+norm.values
+str(norm.values)
+mean(train.df[,1])
+mean(train.df[ , 2])
+sd(train.df[,1])
+sd(train.df[ , 2])
+
+#use proProcess() from caret packages to normalize
+train.norm.df[ , -7]-< predict(norm.values, train.df[,-7])
+train.norm.df
+valid.norm.df[,-7]<-predict(norm.values, valid.df[, -7])
+valid.norm.df
+bank.norm.df[, -7]<-predict(norm.values, bank.df[ , -7])
+bank.norm.df
+new.norm.df<-predict(norm.values, new.df)
+new..nrom.df
+
+#k가 1일때 유사 레코드 찾는다
+install.packages("FNN")
+library(FNN)
+nn<-knn(train=train.norm.df[,-7], test=new.norm.df, cl=train.norm.df[,7], k=1, prob=TRUE)
+nn
+row.names(train.df)[attr(nn, "nn.index")]
+
+#best k 선택, 정오분류표 만듬
+#accuracy 14X2 초기화
+accuracy.df <-data.fram(k=seq(q1,20,1), accuracy=rep(0,20))
+accuracy.df
+
+for(i in 1:20){
+knn.pred<-knn(train=train.norm.df[,-7], test=valid.norm.df[,-7], cl=train.norm.df[,7], k=i)
+accuracy.df[i,2]<-confusionMatrix(knn.pred, as.factor(valid.norm.df[,7]))$overall[1]
+}
+
+class(knn.pred)
+class(valid.norm.df[,7])
+valid.norm.df[,7]<-as.factor(valid.norm.df[, 7])
+accuracy.df
+conf<-confusionMatrix(knn.pred, valid.norm.df[,7])
+conf
+str(conf)
+
+#c. confusion matrix for k=3
+knn.pred.c <- knn(train=train.norm.df[, -7]. test=valid.norm.df[, -7], cl=train.norm.df[,7], k=3)
+conf<-confusionMatrix(knn.pred.c, valid.norm.df[,7], positive="1")
+conf
+
+#d. k=3
+knn.pred.new<-knn(train=bank.norm.df[,-7], test=new.norm.df, cl=bank.norm.df[,7], k=3. prob=TRUE)
+knn.pred.new
+bank.df[c("4035", 4408", "3399"), ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
